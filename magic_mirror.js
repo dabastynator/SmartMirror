@@ -3,8 +3,8 @@ var mWeather = 'http://api.openweathermap.org/data/2.5/weather?q=Parsberg,de&app
 
 var mMonthNames = [ "Januar", "Februar", "März", "April", "Mai", "Juni",
 		"Juli", "August", "September", "Oktober", "November", "Dezember" ];
-var mWeekNames = [ "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag",
-		"Samstag", "Sonntag" ];
+var mWeekNames = [ "Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", 
+		"Freitag", "Samstag" ];
 
 function initialize() {
 	shortloop();
