@@ -41,10 +41,12 @@ function refreshWeather() {
 	else
 		icon_name = 'moon';
 	// Respect clouds
-	if (response.clouds.all > 90)
+	if (response.clouds.all >= 90)
 		icon_name = 'cloud';
-	else if (response.clouds.all > 10)
+	else if (response.clouds.all > 50)
 		icon_name += '_cloud';
+	else if (response.clouds.all > 10)
+	  icon_name += '_cloud_less';
 	// Respect rain and snow
 	if (response.rain != null)
 		icon_name += '_rain';
