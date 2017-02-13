@@ -78,16 +78,26 @@ function refreshMusic() {
 	var song = document.getElementById('song');
 	var container_music = document.getElementById('container_music');
 	if (artist != null && song != null && container_music != null) {
-		if (response[0].current_playing != null) {
+		var playing = response[0].current_playing;
+		artist.innerHTML = '';
+		song.innerHTML = '';
+		if (playing != null) {
 			container_music.style.visibility = 'visible';
-			artist.innerHTML = response[0].current_playing.artist;
-			if (response[0].current_playing.title.length > 30)
-				song.innerHTML = response[0].current_playing.title.substring(0,
-						30)
-						+ "...";
-			else
-				song.innerHTML = response[0].current_playing.title;
-			song.innerHTML = response[0].current_playing.title;
+			if (playing.artist != null)
+				artist.innerHTML = playing.artist;
+			
+			if (playing.title != null){
+				if (playing.title.length > 30)
+					song.innerHTML = playing.title.substring(0,
+							30)
+							+ "...";
+				else
+					song.innerHTML = playing.title;
+			}
+
+			if (playing.artist == null && playing.title == null && playing.file != null){
+				song.innerHTML = playing.file;
+			}
 		} else {
 			container_music.style.visibility = 'hidden';
 		}
