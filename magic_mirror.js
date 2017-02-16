@@ -10,8 +10,8 @@ function initialize() {
 	shortloop();
 	longloop();
 	
-	// Setup short refresh loop for 2 seconds
-	setInterval(shortloop, 1000 * 2);
+	// Setup short refresh loop for 5 seconds
+	setInterval(shortloop, 1000 * 5);
 	// Setup short refresh loop for 5 minutes
 	setInterval(longloop, 1000 * 60 * 5);
 }
