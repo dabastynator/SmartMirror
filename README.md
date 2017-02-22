@@ -1,4 +1,5 @@
-# MagicMirror
+MagicMirror
+=======================
 
 This Magic Mirror or Smart Mirror is completely based on html, 
 javascript and css. Everything you need is a browser.
