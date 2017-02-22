@@ -10,4 +10,4 @@ To show weather information i use  http://api.openweathermap.org.
 Music and switch information comes from my smart home server 
 based on this githup repo: https://github.com/dabastynator/RemoteControlSystem
 
-![alt tag](img/demo.png =500x)
+<img src="img/demo.png" alt="Drawing" style="width: 500px;"/>
