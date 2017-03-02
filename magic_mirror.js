@@ -1,7 +1,7 @@
 var mEndpoint = 'http://192.168.2.11:5061';
 var mWeather = 'http://api.openweathermap.org/data/2.5/weather?q=Parsberg,de&appid=';
 
-var mMonthNames = [ "Januar", "Februar", "März", "April", "Mai", "Juni",
+var mMonthNames = [ "Januar", "Februar", "M\u00e4rz", "April", "Mai", "Juni",
 		"Juli", "August", "September", "Oktober", "November", "Dezember" ];
 var mWeekNames = [ "Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", 
 		"Freitag", "Samstag" ];
