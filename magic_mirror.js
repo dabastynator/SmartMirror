@@ -33,7 +33,7 @@ function refreshWeather() {
 	var celsius = Math.round(response.main.temp - 274);
 	var now = Math.floor(new Date().getTime()/1000);
 	temperature.innerHTML = celsius + '&deg;';
-	var icon_text = '<img width="150px" src="img/';
+	var icon_text = '<img src="img/';
 	var icon_name = '';
 	// Respect sunrise-sunset
 	if (now > response.sys.sunrise && now < response.sys.sunset)
@@ -63,7 +63,7 @@ function refreshSwitches() {
 	for (var i = 0; i < response.length; i++) {
 		var s = response[i];
 		if (s.state == "ON") {
-			content += '<tr><td><img src="img/lamp.png" width="64px"></td><td>';
+			content += '<tr><td><img src="img/lamp.png"></td><td>';
 			content += s.name;
 			content += '</td></tr>';
 		}
