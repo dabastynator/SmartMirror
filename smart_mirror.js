@@ -60,6 +60,7 @@ function refreshSwitches() {
 	var response = httpGet(mEndpoint + '/switch/list?' + mSecurity);
 	var container = document.getElementById('container_switches');
 	var content = '<table class="switch">';
+	response.sort(function(a, b){return a.name.localeCompare(b.name)});
 	for (var i = 0; i < response.length; i++) {
 		var s = response[i];
 		if (s.state == "ON") {
