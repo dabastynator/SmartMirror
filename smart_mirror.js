@@ -49,12 +49,14 @@ function refreshWeather() {
 	  icon_name += '_cloud_less';
 	// Respect rain and snow
 	var weather_id = "";
-  if (response.weather != null && response.weather.length > 0 &&
-			response.weather[0].id != null)
+	if (response.weather != null && response.weather.length > 0 &&
+			response.weather[0].id != null){
 		weather_id = response.weather[0].id + "";
-	if (response.rain != null || weather_id.startsWith('5'))
+		weather_id = weather_id.charAt(0);
+	}
+	if (response.rain != null || weather_id == '5')
 		icon_name += '_rain';
-	else if (response.snow != null || weather_id.startsWith('6'))
+	else if (response.snow != null || weather_id == '6')
 		icon_name += '_snow';
 	icon_text += icon_name + '.png"/>';
 	icon.innerHTML = icon_text;
