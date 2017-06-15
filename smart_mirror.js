@@ -48,9 +48,10 @@ function refreshWeather() {
 	else if (response.clouds.all > 10)
 	  icon_name += '_cloud_less';
 	// Respect rain and snow
-	if (response.rain != null)
+  var weather_id = response.weather[0].id.toString();
+	if (response.rain != null || weather_id.startsWith('5'))
 		icon_name += '_rain';
-	else if (response.snow != null)
+	else if (response.snow != null || weather_id.startsWith('6'))
 		icon_name += '_snow';
 	icon_text += icon_name + '.png"/>';
 	icon.innerHTML = icon_text;
