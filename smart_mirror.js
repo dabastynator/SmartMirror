@@ -1,5 +1,4 @@
 var mEndpoint = 'http://192.168.2.11:5061';
-var mWeather = 'http://api.openweathermap.org/data/2.5/weather?q=Parsberg,de&appid=';
 
 var mMonthNames = [ "Januar", "Februar", "M\u00e4rz", "April", "Mai", "Juni",
 		"Juli", "August", "September", "Oktober", "November", "Dezember" ];
@@ -27,36 +26,28 @@ function longloop() {
 }
 
 function refreshWeather() {
-	var response = httpGet(mWeather + mOpenWeatherKey);
+	var response = httpGet(mEndpoint + '/information/info?key=weather&' + mSecurity);
 	var temperature = document.getElementById('temperature');
 	var icon = document.getElementById('weather_img');
-	var celsius = Math.round(response.main.temp - 274);
-	var now = Math.floor(new Date().getTime()/1000);
-	temperature.innerHTML = celsius + '&deg;';
+	temperature.innerHTML = Math.round(response.celsius) + '&deg;';
 	var icon_text = '<img src="img/';
 	var icon_name = '';
 	// Respect sunrise-sunset
-	if (now > response.sys.sunrise && now < response.sys.sunset)
+	if (response.day_night == 'Day')
 		icon_name = 'sun';
 	else
 		icon_name = 'moon';
 	// Respect clouds
-	if (response.clouds.all >= 90)
+	if (response.clouds >= 90)
 		icon_name = 'cloud';
-	else if (response.clouds.all > 50)
+	else if (response.clouds > 50)
 		icon_name += '_cloud';
-	else if (response.clouds.all > 10)
+	else if (response.clouds > 10)
 	  icon_name += '_cloud_less';
 	// Respect rain and snow
-	var weather_id = "";
-	if (response.weather != null && response.weather.length > 0 &&
-			response.weather[0].id != null){
-		weather_id = response.weather[0].id + "";
-		weather_id = weather_id.charAt(0);
-	}
-	if (response.rain != null || weather_id == '5')
+	if (response.rain != null && response.rain)
 		icon_name += '_rain';
-	else if (response.snow != null || weather_id == '6')
+	else if (response.snow != null && response.snow)
 		icon_name += '_snow';
 	icon_text += icon_name + '.png"/>';
 	icon.innerHTML = icon_text;
