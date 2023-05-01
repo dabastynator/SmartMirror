@@ -1,4 +1,11 @@
-var mEndpoint = 'http://192.168.2.11:5061';
+/*
+SmartMirror Javascript to get content and display in the document.
+Define following variables in a separate smart_config.js file
+var mEndpoint = ...
+var mSecurity = ...
+var mHASKey = ...
+var mHASEndpoint = ...
+*/
 
 var mMonthNames = [ "Januar", "Februar", "M\u00e4rz", "April", "Mai", "Juni",
 		"Juli", "August", "September", "Oktober", "November", "Dezember" ];
@@ -55,6 +62,7 @@ function refreshWeather() {
 
 function refreshSwitches() {
 	var response = httpGet(mEndpoint + '/switch/list?' + mSecurity);
+	var hasStates = getHASStates();
 	var container = document.getElementById('container_switches');
 	var content = '<table class="switch">';
 	response.sort(function(a, b){return a.name.localeCompare(b.name)});
@@ -64,6 +72,20 @@ function refreshSwitches() {
 			content += '<tr><td><img src="img/lamp.png"></td><td>';
 			content += s.name;
 			content += '</td></tr>';
+		}
+	}
+	for (var i = 0; i < hasStates.length; i++) {
+		var s = hasStates[i];
+		if (s.entity_id == "sensor.garage_door") {
+			if (s.state == "closed"){
+				content += '<tr><td><img src="img/cover_closed.png"></td><td>';
+				content += "Garage geschlossen";
+				content += '</td></tr>';
+			}else{
+				content += '<tr><td><img src="img/cover_open.png"></td><td>';
+				content += "Garage offen";
+				content += '</td></tr>';
+			}
 		}
 	}
 	content += '</table>';
@@ -105,6 +127,16 @@ function refreshMusic() {
 function httpGet(theUrl) {
 	var xmlHttp = new XMLHttpRequest();
 	xmlHttp.open("GET", theUrl, false); // false for synchronous request
+	xmlHttp.send(null);
+	var response = xmlHttp.responseText;
+	return JSON.parse(response);
+}
+
+function getHASStates(){
+	var theUrl = mHASEndpoint + '/api/states';
+	var xmlHttp = new XMLHttpRequest();
+	xmlHttp.open("GET", theUrl, false); // false for synchronous request
+	xmlHttp.setRequestHeader('Authorization','Bearer ' + mHASKey);
 	xmlHttp.send(null);
 	var response = xmlHttp.responseText;
 	return JSON.parse(response);
