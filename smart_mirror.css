@@ -14,13 +14,13 @@ body {
 	text-align: center;
 }
 
-.music {
-	font-size: 2em;
+.bottom {
+	font-size: 1em;
 	margin: 5px;
 }
 
-.switch {
-	font-size: 1em;
+table.bottom td  {
+  padding: 5px;
 }
 
 .weather {
@@ -35,6 +35,7 @@ body {
 }
 
 .container_music {
+	font-size: 1.8em;
 	position: absolute;
 	bottom: 10px;
 	left: 10px;

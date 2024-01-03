@@ -65,7 +65,7 @@ function refreshSwitches() {
 	var hasStates = getHASStates();
 	var container = document.getElementById('container_switches');
 	var sunContainer = document.getElementById('sun_power');
-	var content = '<table class="switch">';
+	var content = '<table class="bottom">';
 	response.sort(function(a, b){return a.name.localeCompare(b.name)});
 	for (var i = 0; i < response.length; i++) {
 		var s = response[i];
