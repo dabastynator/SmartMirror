@@ -64,6 +64,7 @@ function refreshSwitches() {
 	var response = httpGet(mEndpoint + '/switch/list?' + mSecurity);
 	var hasStates = getHASStates();
 	var container = document.getElementById('container_switches');
+	var sunContainer = document.getElementById('sun_power');
 	var content = '<table class="switch">';
 	response.sort(function(a, b){return a.name.localeCompare(b.name)});
 	for (var i = 0; i < response.length; i++) {
@@ -86,6 +87,10 @@ function refreshSwitches() {
 				content += "Garage offen";
 				content += '</td></tr>';
 			}
+		}
+		if (s.entity_id == "sensor.rct_power_storage_generator_a_energy_production_day") {
+			var sunContent = Math.round(s.state / 100) / 10 + " kWh";
+			sunContainer.innerHTML = sunContent;
 		}
 	}
 	content += '</table>';
@@ -119,7 +124,7 @@ function refreshMusic() {
 				song.innerHTML = playing.file;
 			}
 		} else {
-			container_music.style.visibility = 'hidden';
+			container_music.style.display = 'none';
 		}
 	}
 }
