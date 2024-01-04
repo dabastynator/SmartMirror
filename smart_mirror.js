@@ -124,7 +124,7 @@ function refreshMusic() {
 				song.innerHTML = playing.file;
 			}
 		} else {
-			container_music.style.display = 'none';
+			container_music.style.visibility = 'hidden';
 		}
 	}
 }
