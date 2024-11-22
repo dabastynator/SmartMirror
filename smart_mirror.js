@@ -3,8 +3,6 @@ SmartMirror Javascript to get content and display in the document.
 Define following variables in a separate smart_config.js file
 var mEndpoint = ...
 var mSecurity = ...
-var mHASKey = ...
-var mHASEndpoint = ...
 */
 
 var mMonthNames = [ "Januar", "Februar", "M\u00e4rz", "April", "Mai", "Juni",
@@ -12,59 +10,82 @@ var mMonthNames = [ "Januar", "Februar", "M\u00e4rz", "April", "Mai", "Juni",
 var mWeekNames = [ "Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", 
 		"Freitag", "Samstag" ];
 
-function initialize() {
+var mGarage = "undefined";
+
+function initialize()
+{
 	shortloop();
-	longloop();
 	
-	// Setup short refresh loop for 5 seconds
-	setInterval(shortloop, 1000 * 5);
-	// Setup short refresh loop for 5 minutes
-	setInterval(longloop, 1000 * 60 * 5);
+	// Setup short refresh loop for 3 seconds
+	setInterval(shortloop, 1000 * 3);
 }
 
-function shortloop() {
+function shortloop()
+{
 	refreshDate();
 	refreshMusic();
+	refreshInformation();
 	refreshSwitches();
 }
 
-function longloop() {
-	refreshWeather();
+function refreshInformation()
+{
+	var response = httpGet(mEndpoint + '/information/list?' + mSecurity);
+	for (const info of response)
+	{
+		if(info.key == "weather")
+		{
+			refreshWeather(info);
+		}
+		if(info.key == "sensor.rct_power_storage_generator_a_energy_production_day")
+		{
+			refreshPV(info);
+		}
+		if(info.key == "sensor.garage_door")
+		{
+			mGarage = info.state;
+		}
+	}
 }
 
-function refreshWeather() {
-	var response = httpGet(mEndpoint + '/information/info?key=weather&' + mSecurity);
+function refreshWeather(weather)
+{
 	var temperature = document.getElementById('temperature');
 	var icon = document.getElementById('weather_img');
-	temperature.innerHTML = Math.round(response.celsius) + '&deg;';
+	temperature.innerHTML = Math.round(weather.celsius) + '&deg;';
 	var icon_text = '<img src="img/';
 	var icon_name = '';
 	// Respect sunrise-sunset
-	if (response.day_night == 'Day')
+	if (weather.day_night == 'Day')
 		icon_name = 'sun';
 	else
 		icon_name = 'moon';
 	// Respect clouds
-	if (response.clouds >= 90)
+	if (weather.clouds >= 90)
 		icon_name = 'cloud';
-	else if (response.clouds > 50)
+	else if (weather.clouds > 50)
 		icon_name += '_cloud';
-	else if (response.clouds > 10)
+	else if (weather.clouds > 10)
 	  icon_name += '_cloud_less';
 	// Respect rain and snow
-	if (response.rain != null && response.rain)
+	if (weather.rain != null && weather.rain)
 		icon_name += '_rain';
-	else if (response.snow != null && response.snow)
+	else if (weather.snow != null && weather.snow)
 		icon_name += '_snow';
 	icon_text += icon_name + '.png"/>';
 	icon.innerHTML = icon_text;
 }
 
+function refreshPV(pv)
+{
+	var sunContainer = document.getElementById('sun_power');
+	var sunContent = Math.round(Number(pv.state) / 100) / 10 + " kWh";
+	sunContainer.innerHTML = sunContent;
+}
+
 function refreshSwitches() {
 	var response = httpGet(mEndpoint + '/switch/list?' + mSecurity);
-	var hasStates = getHASStates();
 	var container = document.getElementById('container_switches');
-	var sunContainer = document.getElementById('sun_power');
 	var content = '<table class="bottom">';
 	response.sort(function(a, b){return a.name.localeCompare(b.name)});
 	for (var i = 0; i < response.length; i++) {
@@ -75,23 +96,17 @@ function refreshSwitches() {
 			content += '</td></tr>';
 		}
 	}
-	for (var i = 0; i < hasStates.length; i++) {
-		var s = hasStates[i];
-		if (s.entity_id == "sensor.garage_door") {
-			if (s.state == "closed"){
-				content += '<tr><td><img src="img/cover_closed.png"></td><td>';
-				content += "Garage geschlossen";
-				content += '</td></tr>';
-			}else{
-				content += '<tr><td><img src="img/cover_open.png"></td><td>';
-				content += "Garage offen";
-				content += '</td></tr>';
-			}
-		}
-		if (s.entity_id == "sensor.rct_power_storage_generator_a_energy_production_day") {
-			var sunContent = Math.round(s.state / 100) / 10 + " kWh";
-			sunContainer.innerHTML = sunContent;
-		}
+	if (mGarage == "closed")
+	{
+		content += '<tr><td><img src="img/cover_closed.png"></td><td>';
+		content += "Garage geschlossen";
+		content += '</td></tr>';
+	}
+	if (mGarage == "open")
+	{
+		content += '<tr><td><img src="img/cover_open.png"></td><td>';
+		content += "Garage offen";
+		content += '</td></tr>';
 	}
 	content += '</table>';
 	container.innerHTML = content;
@@ -132,16 +147,6 @@ function refreshMusic() {
 function httpGet(theUrl) {
 	var xmlHttp = new XMLHttpRequest();
 	xmlHttp.open("GET", theUrl, false); // false for synchronous request
-	xmlHttp.send(null);
-	var response = xmlHttp.responseText;
-	return JSON.parse(response);
-}
-
-function getHASStates(){
-	var theUrl = mHASEndpoint + '/api/states';
-	var xmlHttp = new XMLHttpRequest();
-	xmlHttp.open("GET", theUrl, false); // false for synchronous request
-	xmlHttp.setRequestHeader('Authorization','Bearer ' + mHASKey);
 	xmlHttp.send(null);
 	var response = xmlHttp.responseText;
 	return JSON.parse(response);
